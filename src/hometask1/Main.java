@@ -5,8 +5,14 @@ import java.io.*;
 public class Main {
     public static void main(String[] args) {
 
-        File file = new File("files");
-        File writer = new File("all.txt");
+        File directory = new File(sourceDirectory);
+        File[] files = directory.listFiles();
+
+
+        if (files == null || files.length == 0) {
+            System.out.println("No files found in directory");
+            return;
+        }
 
 
         try (
