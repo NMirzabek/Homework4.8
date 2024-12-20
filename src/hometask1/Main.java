@@ -18,39 +18,24 @@ public class Main {
         try (
                 BufferedWriter bw = new BufferedWriter(new FileWriter(writer))
         ) {
-            if (file.isDirectory()) {
-                readFile(file, bw);
-            } else {
-                System.out.println("File not found");
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private static void readFile(File file, BufferedWriter bw) {
-        File[] files = file.listFiles();
-        if (files != null) {
-            for (File f : files) {
-                if (f.isDirectory()) {
-                    readFile(f, bw);
-                } else if (f.getName().endsWith(".txt")) {
-                    readText(f, bw);
+            for (File file : files) {
+                if (file.isFile() && file.getName().endsWith(".txt")) {
+                    try (
+                            BufferedReader reader = new BufferedReader(new FileReader(file))
+                    ) {
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            writer.write(line);
+                            writer.newLine();
+                        }
+                    } catch (IOException e) {
+                        System.out.println("Error reading file: " + file.getName() + " - " + e.getMessage());
+                    }
                 }
-            }
-        }
-    }
-
-    private static void readText(File f, BufferedWriter bw) {
-        try (
-                BufferedReader br = new BufferedReader(new FileReader(f))
-        ) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                bw.write(line + "\n");
+                System.out.println("All files are written to " + outputFile);
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("Error writing to file: " + e.getMessage());
         }
     }
 }
